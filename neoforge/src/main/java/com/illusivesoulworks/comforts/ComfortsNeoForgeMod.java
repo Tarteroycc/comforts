@@ -120,7 +120,6 @@ public class ComfortsNeoForgeMod {
 
       for (RegistryObject<Block> value : ComfortsRegistry.SLEEPING_BAGS.values()) {
         evt.accept(value.get());
-        ComfortsConstants.LOG.info(value.getResourceKey().toString());
       }
 
       for (RegistryObject<Block> value : ComfortsRegistry.HAMMOCKS.values()) {
