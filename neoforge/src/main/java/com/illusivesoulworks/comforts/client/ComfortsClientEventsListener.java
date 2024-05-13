@@ -17,18 +17,19 @@
 
 package com.illusivesoulworks.comforts.client;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
-import net.neoforged.neoforge.event.TickEvent;
 
 public class ComfortsClientEventsListener {
 
   @SubscribeEvent
-  public void onTick(final TickEvent.PlayerTickEvent evt) {
+  public void onTick(final ClientTickEvent.Post evt) {
 
-    if (evt.phase == TickEvent.Phase.START && evt.side == LogicalSide.CLIENT) {
-      ComfortsClientEvents.onTick(evt.player);
+    if (Minecraft.getInstance().player instanceof AbstractClientPlayer player) {
+      ComfortsClientEvents.onTick(player);
     }
   }
 

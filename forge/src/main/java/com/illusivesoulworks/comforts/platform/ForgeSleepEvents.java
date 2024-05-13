@@ -57,8 +57,8 @@ public class ForgeSleepEvents implements ISleepEvents {
   @Override
   public void sendPlaceBagPacket(ServerPlayer player, UseOnContext context) {
     ComfortsForgeNetwork.INSTANCE.send(
-        new SPacketPlaceBag(player.getId(), context.getHand(), context.getClickLocation(),
-            context.getClickedFace(), context.getClickedPos(), context.isInside()),
+        new SPacketPlaceBag(player.getId(), context.getHand(), context.getClickedFace(),
+            context.getClickedPos(), context.getClickLocation().toVector3f(), context.isInside()),
         PacketDistributor.PLAYER.with(player));
   }
 }

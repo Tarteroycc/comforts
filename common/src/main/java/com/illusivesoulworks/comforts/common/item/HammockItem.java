@@ -26,6 +26,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -33,7 +34,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 public class HammockItem extends BaseComfortsItem {
 
@@ -98,9 +98,8 @@ public class HammockItem extends BaseComfortsItem {
   }
 
   @Override
-  public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level,
-                              @Nonnull List<Component> components,
-                              @Nonnull TooltipFlag flag) {
+  public void appendHoverText(@Nonnull ItemStack stack, @Nonnull Item.TooltipContext context,
+                              List<Component> components, @Nonnull TooltipFlag flag) {
     components.add(Component.translatable("item.comforts.hammock.placement.tooltip",
             Component.translatable("block.comforts.rope_and_nail").withStyle(ChatFormatting.YELLOW))
         .withStyle(ChatFormatting.GRAY));

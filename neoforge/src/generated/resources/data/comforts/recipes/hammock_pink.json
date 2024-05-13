@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "comforts:hammock",
+  "key": {
+    "#": {
+      "item": "minecraft:pink_wool"
+    },
+    "S": {
+      "tag": "c:strings"
+    },
+    "X": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    "SXS",
+    "S#S",
+    "SXS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "comforts:hammock_pink"
+  }
+}

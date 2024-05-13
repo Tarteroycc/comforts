@@ -25,11 +25,23 @@ import com.illusivesoulworks.comforts.common.network.ComfortsClientPayloadHandle
 import com.illusivesoulworks.comforts.common.network.SPacketAutoSleep;
 import com.illusivesoulworks.comforts.common.network.SPacketPlaceBag;
 import com.illusivesoulworks.comforts.common.registry.RegistryObject;
+import com.illusivesoulworks.comforts.data.ComfortsBlockTagsProvider;
+import com.illusivesoulworks.comforts.data.ComfortsItemTagProvider;
+import com.illusivesoulworks.comforts.data.ComfortsLootTableProvider;
+import com.illusivesoulworks.comforts.data.ComfortsRecipeProvider;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -37,8 +49,10 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
@@ -62,17 +76,41 @@ public class ComfortsNeoForgeMod {
     eventBus.addListener(this::setup);
     eventBus.addListener(this::registerPayloadHandler);
     eventBus.addListener(this::creativeTab);
+    eventBus.addListener(this::gatherData);
+  }
+
+  private void gatherData(GatherDataEvent evt) {
+    DataGenerator generator = evt.getGenerator();
+
+    if (evt.includeServer()) {
+      ExistingFileHelper existingFileHelper = evt.getExistingFileHelper();
+      CompletableFuture<HolderLookup.Provider> lookupProvider = evt.getLookupProvider();
+      DataGenerator gen = evt.getGenerator();
+      PackOutput packOutput = gen.getPackOutput();
+      ComfortsBlockTagsProvider blockTagsProvider =
+          new ComfortsBlockTagsProvider(packOutput, lookupProvider, ComfortsConstants.MOD_ID,
+              existingFileHelper);
+      generator.addProvider(true, new LootTableProvider(packOutput, Collections.emptySet(),
+          List.of(new LootTableProvider.SubProviderEntry(ComfortsLootTableProvider::new,
+              LootContextParamSets.BLOCK)), lookupProvider));
+      generator.addProvider(true, new ComfortsRecipeProvider(packOutput, lookupProvider));
+      generator.addProvider(true, blockTagsProvider);
+      generator.addProvider(true, new ComfortsItemTagProvider(packOutput, lookupProvider,
+          blockTagsProvider.contentsGetter(), ComfortsConstants.MOD_ID, existingFileHelper));
+    }
   }
 
   private void setup(final FMLCommonSetupEvent evt) {
     NeoForge.EVENT_BUS.register(new ComfortsCommonEventsListener());
   }
 
-  private void registerPayloadHandler(final RegisterPayloadHandlerEvent evt) {
-    evt.registrar(ComfortsConstants.MOD_ID).play(SPacketAutoSleep.ID, SPacketAutoSleep::new,
-        handler -> handler.client(ComfortsClientPayloadHandler.getInstance()::handleAutoSleep));
-    evt.registrar(ComfortsConstants.MOD_ID).play(SPacketPlaceBag.ID, SPacketPlaceBag::new,
-        handler -> handler.client(ComfortsClientPayloadHandler.getInstance()::handlePlaceBag));
+  private void registerPayloadHandler(final RegisterPayloadHandlersEvent evt) {
+    evt.registrar(ComfortsConstants.MOD_ID)
+        .playToClient(SPacketAutoSleep.TYPE, SPacketAutoSleep.STREAM_CODEC,
+            ComfortsClientPayloadHandler.getInstance()::handleAutoSleep);
+    evt.registrar(ComfortsConstants.MOD_ID)
+        .playToClient(SPacketPlaceBag.TYPE, SPacketPlaceBag.STREAM_CODEC,
+            ComfortsClientPayloadHandler.getInstance()::handlePlaceBag);
   }
 
   private void creativeTab(final BuildCreativeModeTabContentsEvent evt) {

@@ -18,19 +18,20 @@
 package com.illusivesoulworks.comforts.common;
 
 import com.illusivesoulworks.comforts.common.capability.SleepDataImpl;
-import dev.onyxstudios.cca.api.v3.component.Component;
 import javax.annotation.Nonnull;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import org.ladysnake.cca.api.v3.component.Component;
 
 public class ComponentSleepData extends SleepDataImpl implements Component {
 
   @Override
-  public void readFromNbt(@Nonnull CompoundTag tag) {
+  public void readFromNbt(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider provider) {
     this.read(tag.getCompound("Data"));
   }
 
   @Override
-  public void writeToNbt(@Nonnull CompoundTag tag) {
+  public void writeToNbt(@Nonnull CompoundTag tag, @Nonnull HolderLookup.Provider provider) {
     tag.put("Data", this.write());
   }
 }

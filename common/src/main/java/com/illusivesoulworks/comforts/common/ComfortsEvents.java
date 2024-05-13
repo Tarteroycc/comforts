@@ -24,6 +24,7 @@ import com.illusivesoulworks.comforts.platform.Services;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -195,7 +196,8 @@ public class ComfortsEvents {
     SLEEPING_BAG_EFFECTS.clear();
     ComfortsConfig.SERVER.sleepingBagEffects.get().forEach(effect -> {
       String[] elements = effect.split(";");
-      MobEffect mobEffect = Services.REGISTRY_UTIL.getMobEffect(new ResourceLocation(elements[0]));
+      Holder<MobEffect> mobEffect =
+          Services.REGISTRY_UTIL.getMobEffect(new ResourceLocation(elements[0]));
 
       if (mobEffect == null) {
         return;

@@ -49,13 +49,13 @@ public class NeoForgeSleepEvents implements ISleepEvents {
 
   @Override
   public void sendAutoSleepPacket(ServerPlayer player, BlockPos pos) {
-    PacketDistributor.PLAYER.with(player).send(new SPacketAutoSleep(player.getId(), pos));
+    PacketDistributor.sendToPlayer(player, new SPacketAutoSleep(player.getId(), pos));
   }
 
   @Override
   public void sendPlaceBagPacket(ServerPlayer player, UseOnContext context) {
-    PacketDistributor.PLAYER.with(player).send(
+    PacketDistributor.sendToPlayer(player,
         new SPacketPlaceBag(player.getId(), context.getHand(), context.getClickedFace(),
-            context.getClickedPos(), context.getClickLocation(), context.isInside()));
+            context.getClickedPos(), context.getClickLocation().toVector3f(), context.isInside()));
   }
 }

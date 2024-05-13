@@ -22,17 +22,22 @@ import com.illusivesoulworks.comforts.client.renderer.BaseComfortsBlockEntityRen
 import com.illusivesoulworks.comforts.client.renderer.HammockBlockEntityRenderer;
 import com.illusivesoulworks.comforts.client.renderer.SleepingBagBlockEntityRenderer;
 import com.illusivesoulworks.comforts.common.ComfortsRegistry;
-import com.illusivesoulworks.comforts.common.network.ComfortsPackets;
+import com.illusivesoulworks.comforts.common.network.SPacketAutoSleep;
+import com.illusivesoulworks.comforts.common.network.SPacketPlaceBag;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -60,20 +65,38 @@ public class ComfortsFabricClientMod implements ClientModInitializer {
         ComfortsClientEvents.onTick(client.player);
       }
     });
-    ClientPlayNetworking.registerGlobalReceiver(ComfortsPackets.AUTO_SLEEP,
-        (client, handler, buf, responseSender) -> {
-          BlockPos pos = buf.readBlockPos();
-          client.execute(() -> ComfortsPackets.handleAutoSleep(client.player, pos));
+    ClientPlayNetworking.registerGlobalReceiver(SPacketAutoSleep.TYPE,
+        (payload, context) -> {
+          Minecraft mc = Minecraft.getInstance();
+          ClientLevel level = mc.level;
+
+          if (level != null) {
+            BlockPos pos = payload.pos();
+            Entity entity = level.getEntity(payload.entityId());
+
+            if (entity instanceof Player player) {
+              mc.execute(() -> SPacketAutoSleep.handle(player, pos));
+            }
+          }
         });
-    ClientPlayNetworking.registerGlobalReceiver(ComfortsPackets.PLACE_BAG,
-        (client, handler, buf, responseSender) -> {
-          InteractionHand hand = buf.readEnum(InteractionHand.class);
-          Vec3 location = new Vec3(buf.readVector3f());
-          Direction direction = buf.readEnum(Direction.class);
-          BlockPos pos = buf.readBlockPos();
-          boolean inside = buf.readBoolean();
-          client.execute(() -> ComfortsPackets.handlePlaceBag(client.player, hand,
-              new BlockHitResult(location, direction, pos, inside)));
+    ClientPlayNetworking.registerGlobalReceiver(SPacketPlaceBag.TYPE,
+        (payload, context) -> {
+          Minecraft mc = Minecraft.getInstance();
+          ClientLevel level = mc.level;
+
+          if (level != null) {
+            InteractionHand hand = payload.hand();
+            Vec3 location = new Vec3(payload.location());
+            Direction direction = payload.direction();
+            BlockPos pos = payload.blockPos();
+            boolean inside = payload.inside();
+            Entity entity = level.getEntity(payload.entityId());
+
+            if (entity instanceof Player player) {
+              mc.execute(() -> SPacketPlaceBag.handle(player, hand,
+                  new BlockHitResult(location, direction, pos, inside)));
+            }
+          }
         });
   }
 }

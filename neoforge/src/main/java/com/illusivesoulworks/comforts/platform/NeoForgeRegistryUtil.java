@@ -20,6 +20,7 @@ package com.illusivesoulworks.comforts.platform;
 import com.illusivesoulworks.comforts.platform.services.IRegistryUtil;
 import java.util.function.BiFunction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
@@ -38,7 +39,7 @@ public class NeoForgeRegistryUtil implements IRegistryUtil {
   }
 
   @Override
-  public MobEffect getMobEffect(ResourceLocation resourceLocation) {
-    return BuiltInRegistries.MOB_EFFECT.get(resourceLocation);
+  public Holder<MobEffect> getMobEffect(ResourceLocation resourceLocation) {
+    return BuiltInRegistries.MOB_EFFECT.getHolder(resourceLocation).orElse(null);
   }
 }

@@ -18,6 +18,10 @@
 package com.illusivesoulworks.comforts.common.network;
 
 import com.illusivesoulworks.comforts.ComfortsConstants;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.Channel;
 import net.minecraftforge.network.ChannelBuilder;
@@ -35,15 +39,21 @@ public class ComfortsForgeNetwork {
         .clientAcceptedVersions(Channel.VersionTest.exact(PTC_VERSION))
         .serverAcceptedVersions(Channel.VersionTest.exact(PTC_VERSION)).simpleChannel();
 
-    INSTANCE.messageBuilder(SPacketAutoSleep.class)
-        .encoder(SPacketAutoSleep::encode)
-        .decoder(SPacketAutoSleep::decode)
-        .consumerNetworkThread(SPacketAutoSleep::handle)
-        .add();
-    INSTANCE.messageBuilder(SPacketPlaceBag.class)
-        .encoder(SPacketPlaceBag::encode)
-        .decoder(SPacketPlaceBag::decode)
-        .consumerNetworkThread(SPacketPlaceBag::handle)
-        .add();
+    registerS2C(SPacketAutoSleep.class, SPacketAutoSleep.STREAM_CODEC::encode,
+        SPacketAutoSleep.STREAM_CODEC::decode, ClientPacketHandler::handle);
+    registerS2C(SPacketPlaceBag.class, SPacketPlaceBag.STREAM_CODEC::encode,
+        SPacketPlaceBag.STREAM_CODEC::decode, ClientPacketHandler::handle);
+  }
+
+  public static <M> void registerS2C(Class<M> messageType, BiConsumer<FriendlyByteBuf, M> encoder,
+                                     Function<FriendlyByteBuf, M> decoder,
+                                     Consumer<M> messageConsumer) {
+    INSTANCE.messageBuilder(messageType)
+        .decoder(decoder)
+        .encoder(((m, friendlyByteBuf) -> encoder.accept(friendlyByteBuf, m)))
+        .consumerNetworkThread((m, context) -> {
+          context.enqueueWork(() -> messageConsumer.accept(m));
+          context.setPacketHandled(true);
+        }).add();
   }
 }

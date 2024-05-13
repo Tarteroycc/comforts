@@ -28,13 +28,13 @@ import javax.annotation.Nullable;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Unit;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
@@ -83,9 +83,9 @@ public abstract class BaseComfortsBlock extends BedBlock implements SimpleWaterl
 
   @Nonnull
   @Override
-  public InteractionResult use(@Nonnull BlockState state, Level level,
-                               @Nonnull BlockPos pos, @Nonnull Player player,
-                               @Nonnull InteractionHand handIn, @Nonnull BlockHitResult hit) {
+  public InteractionResult useWithoutItem(@Nonnull BlockState state, Level level,
+                                          @Nonnull BlockPos pos, @Nonnull Player player,
+                                          @Nonnull BlockHitResult hit) {
 
     if (level.isClientSide) {
       return InteractionResult.CONSUME;
@@ -309,12 +309,10 @@ public abstract class BaseComfortsBlock extends BedBlock implements SimpleWaterl
     super.createBlockStateDefinition(builder);
   }
 
-  @SuppressWarnings("deprecation")
   @Nonnull
   @Override
   public FluidState getFluidState(BlockState state) {
-    return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false)
-        : super.getFluidState(state);
+    return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
   }
 
   @Override
@@ -323,7 +321,7 @@ public abstract class BaseComfortsBlock extends BedBlock implements SimpleWaterl
     super.setPlacedBy(level, pos, state, livingEntity, stack);
     BlockPos blockPos = pos.relative(state.getValue(FACING));
 
-    if (stack.hasCustomHoverName()) {
+    if (stack.get(DataComponents.CUSTOM_NAME) != null) {
       level.getBlockEntity(blockPos, this.getBlockEntityType())
           .ifPresent((blockEntity) -> blockEntity.setName(stack.getHoverName()));
     }
@@ -331,7 +329,7 @@ public abstract class BaseComfortsBlock extends BedBlock implements SimpleWaterl
 
   public abstract BlockEntityType<? extends BaseComfortsBlockEntity> getBlockEntityType();
 
-  enum BedType {
+  public enum BedType {
     HAMMOCK("hammock"), SLEEPING_BAG("sleeping_bag");
 
     private final String name;

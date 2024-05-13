@@ -19,10 +19,13 @@ package com.illusivesoulworks.comforts;
 
 import com.illusivesoulworks.comforts.common.ComfortsEvents;
 import com.illusivesoulworks.comforts.common.ComfortsRegistry;
+import com.illusivesoulworks.comforts.common.network.SPacketAutoSleep;
+import com.illusivesoulworks.comforts.common.network.SPacketPlaceBag;
 import com.illusivesoulworks.comforts.common.registry.RegistryObject;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -72,5 +75,7 @@ public class ComfortsFabricMod implements ModInitializer {
       }
       entries.accept(ComfortsRegistry.ROPE_AND_NAIL_ITEM.get());
     });
+    PayloadTypeRegistry.playS2C().register(SPacketPlaceBag.TYPE, SPacketPlaceBag.STREAM_CODEC);
+    PayloadTypeRegistry.playS2C().register(SPacketAutoSleep.TYPE, SPacketAutoSleep.STREAM_CODEC);
   }
 }

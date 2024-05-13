@@ -18,11 +18,13 @@
 package com.illusivesoulworks.comforts.platform;
 
 import com.illusivesoulworks.comforts.common.ComfortsComponents;
-import com.illusivesoulworks.comforts.common.ComfortsFabricNetwork;
 import com.illusivesoulworks.comforts.common.capability.ISleepData;
+import com.illusivesoulworks.comforts.common.network.SPacketAutoSleep;
+import com.illusivesoulworks.comforts.common.network.SPacketPlaceBag;
 import com.illusivesoulworks.comforts.platform.services.ISleepEvents;
 import java.util.Optional;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -55,12 +57,13 @@ public class FabricSleepEvents implements ISleepEvents {
 
   @Override
   public void sendAutoSleepPacket(ServerPlayer player, BlockPos pos) {
-    ComfortsFabricNetwork.sendAutoSleep(player, pos);
+    ServerPlayNetworking.send(player, new SPacketAutoSleep(player.getId(), pos));
   }
 
   @Override
-  public void sendPlaceBagPacket(ServerPlayer serverPlayer, UseOnContext context) {
-    ComfortsFabricNetwork.sendPlaceBag(serverPlayer, context.getHand(), context.getClickLocation(),
-        context.getClickedFace(), context.getClickedPos(), context.isInside());
+  public void sendPlaceBagPacket(ServerPlayer player, UseOnContext context) {
+    ServerPlayNetworking.send(player,
+        new SPacketPlaceBag(player.getId(), context.getHand(), context.getClickedFace(),
+            context.getClickedPos(), context.getClickLocation().toVector3f(), context.isInside()));
   }
 }

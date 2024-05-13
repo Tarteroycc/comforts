@@ -1,0 +1,43 @@
+package com.illusivesoulworks.comforts.data;
+
+import com.illusivesoulworks.comforts.common.ComfortsRegistry;
+import com.illusivesoulworks.comforts.common.ComfortsTags;
+import com.illusivesoulworks.comforts.common.registry.RegistryObject;
+import java.util.concurrent.CompletableFuture;
+import javax.annotation.Nonnull;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
+
+public class ComfortsItemTagProvider extends ItemTagsProvider {
+
+
+  public ComfortsItemTagProvider(PackOutput p_275343_,
+                                 CompletableFuture<HolderLookup.Provider> p_275729_,
+                                 CompletableFuture<TagLookup<Block>> p_275322_, String modId,
+                                 @Nullable ExistingFileHelper existingFileHelper) {
+    super(p_275343_, p_275729_, p_275322_, modId, existingFileHelper);
+  }
+
+  @Override
+  protected void addTags(@Nonnull HolderLookup.Provider provider) {
+
+    for (RegistryObject<Block> value : ComfortsRegistry.HAMMOCKS.values()) {
+      this.tag(ComfortsTags.Items.HAMMOCKS).add(value.get().asItem());
+    }
+
+    for (RegistryObject<Block> value : ComfortsRegistry.SLEEPING_BAGS.values()) {
+      this.tag(ComfortsTags.Items.SLEEPING_BAGS).add(value.get().asItem());
+    }
+
+    this.tag(Tags.Items.ROPES)
+        .addOptional(new ResourceLocation("quark", "rope"))
+        .addOptional(new ResourceLocation("supplementaries", "rope"))
+        .addOptional(new ResourceLocation("farmersdelight", "rope"));
+  }
+}

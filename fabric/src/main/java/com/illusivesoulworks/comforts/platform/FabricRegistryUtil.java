@@ -21,6 +21,7 @@ import com.illusivesoulworks.comforts.platform.services.IRegistryUtil;
 import java.util.function.BiFunction;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
@@ -31,6 +32,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class FabricRegistryUtil implements IRegistryUtil {
 
+  @SuppressWarnings("all")
   @Override
   public <T extends BlockEntity> BlockEntityType<T> createBlockEntityType(
       BiFunction<BlockPos, BlockState, T> builder, Block... blocks) {
@@ -38,7 +40,7 @@ public class FabricRegistryUtil implements IRegistryUtil {
   }
 
   @Override
-  public MobEffect getMobEffect(ResourceLocation resourceLocation) {
-    return BuiltInRegistries.MOB_EFFECT.get(resourceLocation);
+  public Holder<MobEffect> getMobEffect(ResourceLocation resourceLocation) {
+    return BuiltInRegistries.MOB_EFFECT.getHolder(resourceLocation).orElse(null);
   }
 }

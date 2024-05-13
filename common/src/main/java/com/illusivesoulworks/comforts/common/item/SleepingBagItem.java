@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2017-2022 Illusive Soulworks
- *
- * Comforts is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * Comforts is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with Comforts.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 package com.illusivesoulworks.comforts.common.item;
 
 import com.illusivesoulworks.comforts.common.ComfortsConfig;
@@ -30,12 +13,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.Nullable;
 
 public class SleepingBagItem extends BaseComfortsItem {
 
@@ -88,9 +70,8 @@ public class SleepingBagItem extends BaseComfortsItem {
   }
 
   @Override
-  public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level,
-                              @Nonnull List<Component> components,
-                              @Nonnull TooltipFlag flag) {
+  public void appendHoverText(@Nonnull ItemStack stack, @Nonnull Item.TooltipContext context,
+                              @Nonnull List<Component> components, @Nonnull TooltipFlag flag) {
 
     if (ComfortsConfig.SERVER.autoUse.get()) {
       components.add(Component.translatable("item.comforts.sleeping_bag.auto_use.tooltip.0")

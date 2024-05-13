@@ -20,6 +20,7 @@ package com.illusivesoulworks.comforts.platform;
 import com.illusivesoulworks.comforts.platform.services.IRegistryUtil;
 import java.util.function.BiFunction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.level.block.Block;
@@ -38,7 +39,7 @@ public class ForgeRegistryUtil implements IRegistryUtil {
   }
 
   @Override
-  public MobEffect getMobEffect(ResourceLocation resourceLocation) {
-    return ForgeRegistries.MOB_EFFECTS.getValue(resourceLocation);
+  public Holder<MobEffect> getMobEffect(ResourceLocation resourceLocation) {
+    return ForgeRegistries.MOB_EFFECTS.getHolder(resourceLocation).orElse(null);
   }
 }

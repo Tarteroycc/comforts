@@ -1,13 +1,10 @@
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
 plugins {
-    id 'java'
-    id 'idea'
-    id 'maven-publish'
-    id 'fabric-loom' version '1.4-SNAPSHOT'
+    id 'multiloader-loader'
+    id 'fabric-loom' version '1.6-SNAPSHOT'
     id 'com.modrinth.minotaur' version '2.+'
     id 'net.darkhax.curseforgegradle' version '1.+'
-}
-base {
-    archivesName = "${mod_id}-fabric"
 }
 
 repositories {
@@ -21,43 +18,19 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings(loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_mc_version}:${parchment_version}@zip")
+        parchment("org.parchmentmc.data:parchment-${parchment_mc}:${parchment_version}@zip")
     })
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
-    compileOnly project(":common")
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cca_version}"
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${cca_version}"
-    modImplementation group: 'com.illusivesoulworks.spectrelib', name: 'spectrelib-fabric', version: "${spectrelib_range}"
+    modImplementation "com.illusivesoulworks.spectrelib:spectrelib-fabric:${spectrelib_version}"
+    include "com.illusivesoulworks.spectrelib:spectrelib-fabric:${spectrelib_version}"
 
-    // Embedded
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cca_version}"
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${cca_version}"
-    include group: 'com.illusivesoulworks.spectrelib', name: 'spectrelib-fabric', version: "${spectrelib_version}"
-}
 
-loom {
-    if (project(":common").file("src/main/resources/${mod_id}.accesswidener").exists()) {
-        accessWidenerPath.set(project(":common").file("src/main/resources/${mod_id}.accesswidener"))
-    }
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
-    }
-    runs {
-        client {
-            client()
-            setConfigName("Fabric Client")
-            ideConfigGenerated(true)
-            runDir("run")
-        }
-        server {
-            server()
-            setConfigName("Fabric Server")
-            ideConfigGenerated(true)
-            runDir("run")
-        }
-    }
+    modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-base:${cca_version}"
+    modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-entity:${cca_version}"
+    include "org.ladysnake.cardinal-components-api:cardinal-components-base:${cca_version}"
+    include "org.ladysnake.cardinal-components-api:cardinal-components-entity:${cca_version}"
 }
 
 sourceSets {
@@ -68,35 +41,31 @@ sourceSets {
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    source(project(":common").sourceSets.main.allSource)
-}
-tasks.withType(Javadoc).configureEach {
-    source(project(":common").sourceSets.main.allJava)
-}
-tasks.named("sourcesJar", Jar) {
-    from(project(":common").sourceSets.main.allSource)
-}
-
-processResources {
-    from project(":common").sourceSets.main.resources
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId base.archivesName.get()
-            from components.java
-        }
+loom {
+    def aw = project(":common").file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
     }
-    repositories {
-        maven {
-            url "file://" + System.getenv("local_maven")
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("runs/client")
+        }
+        server {
+            server()
+            setConfigName("Fabric Server")
+            ideConfigGenerated(true)
+            runDir("runs/server")
         }
     }
 }
 
-task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+tasks.register('publishCurseForge', TaskPublishCurseForge) {
     apiToken = findProperty('curseKey')
     def projectId = "${cf_id}".toString()
     def mainFile = upload(projectId, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
@@ -118,7 +87,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
 }
 
 modrinth {
-    token = findProperty('modrinthKey') ?: 0
+    token = findProperty('modrinthKey') ?: ""
     projectId = "${modrinth_id}"
     versionName = getArchivesBaseName() + "-" + getVersion()
     versionType = "${release_type}"
