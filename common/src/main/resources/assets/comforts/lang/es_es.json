@@ -50,7 +50,7 @@
   "block.comforts.hammock.no_space": "No hay suficiente espacio para colocar la hamaca.",
   "block.comforts.hammock.missing_rope": "Debe haber una cuerda y clavo en el otro extremo para colgar la hamaca.",
   "block.comforts.sleeping_bag.broke": "El saco de dormir se rompió.",
-  "capability.comforts.not_sleepy": "No puedes descansar ahora; aún no te sientes con sueño.",
+  "capability.comforts.not_sleepy": "No puedes descansar ahora; aún no sientes sueño.",
   "gui.comforts.config.autoUse.name": "Usar sacos de dormir automáticamente",
   "gui.comforts.config.autoUse.description": "Si está habilitado, los jugadores intentan usar automáticamente los sacos de dormir cuando se colocan.",
   "gui.comforts.config.restrictSleeping.name": "Restringir el sueño consecutivo",
