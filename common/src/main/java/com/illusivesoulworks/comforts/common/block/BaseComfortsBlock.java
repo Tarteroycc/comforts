@@ -151,6 +151,7 @@ public abstract class BaseComfortsBlock extends BedBlock implements SimpleWaterl
   public static Either<Player.BedSleepingProblem, Unit> trySleep(ServerPlayer player, BlockPos at,
                                                                  boolean dryRun) {
     final Player.BedSleepingProblem ret = Services.SLEEP_EVENTS.getSleepResult(player, at);
+    Either<Player.BedSleepingProblem, Unit> result = null;
 
     if (ret != null) {
       return Either.left(ret);
@@ -161,15 +162,15 @@ public abstract class BaseComfortsBlock extends BedBlock implements SimpleWaterl
     if (!player.isSleeping() && player.isAlive()) {
 
       if (!player.level().dimensionType().natural()) {
-        return Either.left(Player.BedSleepingProblem.NOT_POSSIBLE_HERE);
+        result = Either.left(Player.BedSleepingProblem.NOT_POSSIBLE_HERE);
       } else if (!bedInRange(player, at, direction)) {
-        return Either.left(Player.BedSleepingProblem.TOO_FAR_AWAY);
+        result = Either.left(Player.BedSleepingProblem.TOO_FAR_AWAY);
       } else if (bedBlocked(player, at, direction)) {
-        return Either.left(Player.BedSleepingProblem.OBSTRUCTED);
+        result = Either.left(Player.BedSleepingProblem.OBSTRUCTED);
       } else {
 
         if (Services.SLEEP_EVENTS.isAwakeTime(player, at)) {
-          return Either.left(Player.BedSleepingProblem.NOT_POSSIBLE_NOW);
+          result = Either.left(Player.BedSleepingProblem.NOT_POSSIBLE_NOW);
         } else {
 
           if (!player.isCreative()) {
@@ -182,31 +183,36 @@ public abstract class BaseComfortsBlock extends BedBlock implements SimpleWaterl
                 (monster) -> monster.isPreventingPlayerRest(player));
 
             if (!list.isEmpty()) {
-              return Either.left(Player.BedSleepingProblem.NOT_SAFE);
+              result = Either.left(Player.BedSleepingProblem.NOT_SAFE);
             }
           }
 
-          if (!dryRun) {
-            Block block = player.level().getBlockState(at).getBlock();
-
-            if (block instanceof BaseComfortsBlock comfortsBlock && !comfortsBlock.canRest()) {
-              int time = player.getStats().getValue(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
-              player.startSleeping(at);
-              player.getStats().setValue(player, Stats.CUSTOM.get(Stats.TIME_SINCE_REST), time);
-            } else {
-              player.startSleeping(at);
-            }
-            ((AccessorPlayer) player).setSleepCounter(0);
-            player.awardStat(Stats.SLEEP_IN_BED);
-            CriteriaTriggers.SLEPT_IN_BED.trigger(player);
-            ((ServerLevel) player.level()).updateSleepingPlayerList();
+          if (result == null) {
+            result = Either.right(Unit.INSTANCE);
           }
-          return Either.right(Unit.INSTANCE);
         }
       }
     } else {
-      return Either.left(Player.BedSleepingProblem.OTHER_PROBLEM);
+      result = Either.left(Player.BedSleepingProblem.OTHER_PROBLEM);
     }
+    result = Services.SLEEP_EVENTS.getSleepResult(player, at, result);
+
+    if (!dryRun && result.right().isPresent()) {
+      Block block = player.level().getBlockState(at).getBlock();
+
+      if (block instanceof BaseComfortsBlock comfortsBlock && !comfortsBlock.canRest()) {
+        int time = player.getStats().getValue(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
+        player.startSleeping(at);
+        player.getStats().setValue(player, Stats.CUSTOM.get(Stats.TIME_SINCE_REST), time);
+      } else {
+        player.startSleeping(at);
+      }
+      ((AccessorPlayer) player).setSleepCounter(0);
+      player.awardStat(Stats.SLEEP_IN_BED);
+      CriteriaTriggers.SLEPT_IN_BED.trigger(player);
+      ((ServerLevel) player.level()).updateSleepingPlayerList();
+    }
+    return result;
   }
 
   protected abstract boolean canRest();

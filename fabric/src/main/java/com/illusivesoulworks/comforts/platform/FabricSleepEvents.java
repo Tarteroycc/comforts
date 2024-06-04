@@ -22,11 +22,13 @@ import com.illusivesoulworks.comforts.common.capability.ISleepData;
 import com.illusivesoulworks.comforts.common.network.SPacketAutoSleep;
 import com.illusivesoulworks.comforts.common.network.SPacketPlaceBag;
 import com.illusivesoulworks.comforts.platform.services.ISleepEvents;
+import com.mojang.datafixers.util.Either;
 import java.util.Optional;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
@@ -34,8 +36,14 @@ import net.minecraft.world.item.context.UseOnContext;
 public class FabricSleepEvents implements ISleepEvents {
 
   @Override
-  public Player.BedSleepingProblem getSleepResult(Player player, BlockPos pos) {
+  public Player.BedSleepingProblem getSleepResult(ServerPlayer player, BlockPos pos) {
     return EntitySleepEvents.ALLOW_SLEEPING.invoker().allowSleep(player, pos);
+  }
+
+  @Override
+  public Either<Player.BedSleepingProblem, Unit> getSleepResult(ServerPlayer player, BlockPos pos,
+                                                                Either<Player.BedSleepingProblem, Unit> vanillaResult) {
+    return vanillaResult;
   }
 
   @Override

@@ -23,9 +23,11 @@ import com.illusivesoulworks.comforts.common.network.ComfortsForgeNetwork;
 import com.illusivesoulworks.comforts.common.network.SPacketAutoSleep;
 import com.illusivesoulworks.comforts.common.network.SPacketPlaceBag;
 import com.illusivesoulworks.comforts.platform.services.ISleepEvents;
+import com.mojang.datafixers.util.Either;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -34,8 +36,14 @@ import net.minecraftforge.network.PacketDistributor;
 public class ForgeSleepEvents implements ISleepEvents {
 
   @Override
-  public Player.BedSleepingProblem getSleepResult(Player player, BlockPos pos) {
+  public Player.BedSleepingProblem getSleepResult(ServerPlayer player, BlockPos pos) {
     return ForgeEventFactory.onPlayerSleepInBed(player, Optional.of(pos));
+  }
+
+  @Override
+  public Either<Player.BedSleepingProblem, Unit> getSleepResult(ServerPlayer player, BlockPos pos,
+                                                                Either<Player.BedSleepingProblem, Unit> vanillaResult) {
+    return vanillaResult;
   }
 
   @Override

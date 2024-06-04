@@ -20,12 +20,11 @@ package com.illusivesoulworks.comforts.common;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.CanContinueSleepingEvent;
+import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerSetSpawnEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerSleepInBedEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerWakeUpEvent;
-import net.neoforged.neoforge.event.entity.player.SleepingTimeCheckEvent;
 import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
 
 public class ComfortsCommonEventsListener {
@@ -39,13 +38,20 @@ public class ComfortsCommonEventsListener {
   }
 
   @SubscribeEvent
-  public void onSleepTimeCheck(final SleepingTimeCheckEvent evt) {
-    evt.getSleepingLocation().ifPresent(pos -> {
-      ComfortsEvents.Result result = ComfortsEvents.checkTime(evt.getEntity().level(), pos);
+  public void onSleepTimeCheck(final CanContinueSleepingEvent evt) {
 
-      switch (result) {
-        case ALLOW -> evt.setResult(Event.Result.ALLOW);
-        case DENY -> evt.setResult(Event.Result.DENY);
+    evt.getEntity().getSleepingPos().ifPresent(sleepingPos -> {
+      ComfortsEvents.Result result =
+          ComfortsEvents.checkTime(evt.getEntity().level(), sleepingPos);
+      Player.BedSleepingProblem problem = evt.getProblem();
+
+      if (result == ComfortsEvents.Result.ALLOW &&
+          problem == Player.BedSleepingProblem.NOT_POSSIBLE_NOW) {
+        evt.setContinueSleeping(true);
+      }
+
+      if (result == ComfortsEvents.Result.DENY) {
+        evt.setContinueSleeping(false);
       }
     });
   }
@@ -70,11 +76,22 @@ public class ComfortsCommonEventsListener {
   }
 
   @SubscribeEvent
-  public void onPlayerSleep(final PlayerSleepInBedEvent evt) {
-    Player.BedSleepingProblem result = ComfortsEvents.onSleep(evt.getEntity());
+  public void onPlayerSleep(final CanPlayerSleepEvent evt) {
+    ComfortsEvents.Result result =
+        ComfortsEvents.checkTime(evt.getEntity().level(), evt.getPos());
+    Player.BedSleepingProblem problem = evt.getVanillaProblem();
 
-    if (result != null) {
-      evt.setResult(result);
+    if (result == ComfortsEvents.Result.ALLOW &&
+        problem == Player.BedSleepingProblem.NOT_POSSIBLE_NOW && evt.getProblem() == problem) {
+      evt.setProblem(null);
+    } else if (result == ComfortsEvents.Result.DENY) {
+      evt.setProblem(Player.BedSleepingProblem.NOT_POSSIBLE_NOW);
+    } else if (evt.getProblem() == null) {
+      Player.BedSleepingProblem sleepingProblem = ComfortsEvents.onSleep(evt.getEntity());
+
+      if (sleepingProblem != null) {
+        evt.setProblem(sleepingProblem);
+      }
     }
   }
 }
