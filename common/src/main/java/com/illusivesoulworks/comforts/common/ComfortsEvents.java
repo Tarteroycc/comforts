@@ -203,7 +203,7 @@ public class ComfortsEvents {
     ComfortsConfig.SERVER.sleepingBagEffects.get().forEach(effect -> {
       String[] elements = effect.split(";");
       Holder<MobEffect> mobEffect =
-          Services.REGISTRY_UTIL.getMobEffect(new ResourceLocation(elements[0]));
+          Services.REGISTRY_UTIL.getMobEffect(ResourceLocation.tryParse(elements[0]));
 
       if (mobEffect == null) {
         return;

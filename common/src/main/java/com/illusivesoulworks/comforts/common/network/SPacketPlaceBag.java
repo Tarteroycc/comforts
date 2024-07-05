@@ -21,7 +21,7 @@ public record SPacketPlaceBag(int entityId, InteractionHand hand, Direction dire
     implements CustomPacketPayload {
 
   public static final Type<SPacketPlaceBag> TYPE =
-      new Type<>(new ResourceLocation(ComfortsConstants.MOD_ID, "place_bag"));
+      new Type<>(ResourceLocation.fromNamespaceAndPath(ComfortsConstants.MOD_ID, "place_bag"));
   public static final StreamCodec<FriendlyByteBuf, SPacketPlaceBag> STREAM_CODEC =
       StreamCodec.composite(
           ByteBufCodecs.VAR_INT,

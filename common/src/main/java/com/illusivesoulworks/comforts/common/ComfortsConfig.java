@@ -120,7 +120,7 @@ public class ComfortsConfig {
               s -> {
                 if (s instanceof String str) {
                   String[] split = str.split(";");
-                  return split.length == 3 && ResourceLocation.isValidResourceLocation(split[0]) &&
+                  return split.length == 3 && ResourceLocation.tryParse(split[0]) != null &&
                       split[1].matches("\\d+") && split[2].matches("\\d+");
                 }
                 return false;

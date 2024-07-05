@@ -28,7 +28,8 @@ import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 public class ComfortsComponents implements EntityComponentInitializer {
 
   public static final ComponentKey<ComponentSleepData> SLEEP_TRACKER =
-      ComponentRegistry.getOrCreate(new ResourceLocation(ComfortsConstants.MOD_ID, "sleep_tracker"),
+      ComponentRegistry.getOrCreate(
+          ResourceLocation.fromNamespaceAndPath(ComfortsConstants.MOD_ID, "sleep_tracker"),
           ComponentSleepData.class);
 
   @Override

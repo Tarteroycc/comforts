@@ -46,18 +46,14 @@ import net.minecraft.world.level.block.state.properties.BedPart;
 public abstract class BaseComfortsBlockEntityRenderer<T extends BaseComfortsBlockEntity> implements
     BlockEntityRenderer<T> {
 
-  public static final ModelLayerLocation SLEEPING_BAG_HEAD =
-      new ModelLayerLocation(new ResourceLocation(ComfortsConstants.MOD_ID, "sleeping_bag_head"),
-          "main");
-  public static final ModelLayerLocation SLEEPING_BAG_FOOT =
-      new ModelLayerLocation(new ResourceLocation(ComfortsConstants.MOD_ID, "sleeping_bag_foot"),
-          "main");
-  public static final ModelLayerLocation HAMMOCK_HEAD =
-      new ModelLayerLocation(new ResourceLocation(ComfortsConstants.MOD_ID, "hammock_head"),
-          "main");
-  public static final ModelLayerLocation HAMMOCK_FOOT =
-      new ModelLayerLocation(new ResourceLocation(ComfortsConstants.MOD_ID, "hammock_foot"),
-          "main");
+  public static final ModelLayerLocation SLEEPING_BAG_HEAD = new ModelLayerLocation(
+      ResourceLocation.fromNamespaceAndPath(ComfortsConstants.MOD_ID, "sleeping_bag_head"), "main");
+  public static final ModelLayerLocation SLEEPING_BAG_FOOT = new ModelLayerLocation(
+      ResourceLocation.fromNamespaceAndPath(ComfortsConstants.MOD_ID, "sleeping_bag_foot"), "main");
+  public static final ModelLayerLocation HAMMOCK_HEAD = new ModelLayerLocation(
+      ResourceLocation.fromNamespaceAndPath(ComfortsConstants.MOD_ID, "hammock_head"), "main");
+  public static final ModelLayerLocation HAMMOCK_FOOT = new ModelLayerLocation(
+      ResourceLocation.fromNamespaceAndPath(ComfortsConstants.MOD_ID, "hammock_foot"), "main");
 
   private final String type;
 
@@ -77,7 +73,7 @@ public abstract class BaseComfortsBlockEntityRenderer<T extends BaseComfortsBloc
                      @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer,
                      int combinedLightIn, int combinedOverlayIn) {
     final Material material = new Material(InventoryMenu.BLOCK_ATLAS,
-        new ResourceLocation(ComfortsConstants.MOD_ID,
+        ResourceLocation.fromNamespaceAndPath(ComfortsConstants.MOD_ID,
             "entity/" + type + "/" + blockEntity.getColor().getName()));
     final Level level = blockEntity.getLevel();
 

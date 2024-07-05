@@ -31,7 +31,7 @@ import net.minecraft.world.entity.player.Player;
 public record SPacketAutoSleep(int entityId, BlockPos pos) implements CustomPacketPayload {
 
   public static final Type<SPacketAutoSleep> TYPE =
-      new Type<>(new ResourceLocation(ComfortsConstants.MOD_ID, "auto_sleep"));
+      new Type<>(ResourceLocation.fromNamespaceAndPath(ComfortsConstants.MOD_ID, "auto_sleep"));
   public static final StreamCodec<FriendlyByteBuf, SPacketAutoSleep> STREAM_CODEC =
       StreamCodec.composite(
           ByteBufCodecs.VAR_INT,

@@ -5,6 +5,7 @@ import com.illusivesoulworks.comforts.common.registry.RegistryObject;
 import java.util.Collections;
 import javax.annotation.Nonnull;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
@@ -20,8 +21,8 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 public class ComfortsLootTableProvider extends BlockLootSubProvider {
 
-  public ComfortsLootTableProvider() {
-    super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags());
+  public ComfortsLootTableProvider(HolderLookup.Provider provider) {
+    super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), provider);
   }
 
   @Override

@@ -34,7 +34,8 @@ public class ComfortsForgeNetwork {
   public static SimpleChannel INSTANCE;
 
   public static void setup() {
-    INSTANCE = ChannelBuilder.named(new ResourceLocation(ComfortsConstants.MOD_ID, "main"))
+    INSTANCE = ChannelBuilder.named(
+            ResourceLocation.fromNamespaceAndPath(ComfortsConstants.MOD_ID, "main"))
         .networkProtocolVersion(PTC_VERSION)
         .clientAcceptedVersions(Channel.VersionTest.exact(PTC_VERSION))
         .serverAcceptedVersions(Channel.VersionTest.exact(PTC_VERSION)).simpleChannel();

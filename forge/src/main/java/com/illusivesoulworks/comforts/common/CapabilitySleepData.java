@@ -25,6 +25,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
@@ -75,12 +76,12 @@ public class CapabilitySleepData {
     }
 
     @Override
-    public Tag serializeNBT() {
+    public Tag serializeNBT(HolderLookup.Provider provider) {
       return data.write();
     }
 
     @Override
-    public void deserializeNBT(Tag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, Tag nbt) {
       data.read((CompoundTag) nbt);
     }
   }

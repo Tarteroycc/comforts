@@ -36,8 +36,8 @@ public class ComfortsItemTagProvider extends ItemTagsProvider {
     }
 
     this.tag(Tags.Items.ROPES)
-        .addOptional(new ResourceLocation("quark", "rope"))
-        .addOptional(new ResourceLocation("supplementaries", "rope"))
-        .addOptional(new ResourceLocation("farmersdelight", "rope"));
+        .addOptional(ResourceLocation.fromNamespaceAndPath("quark", "rope"))
+        .addOptional(ResourceLocation.fromNamespaceAndPath("supplementaries", "rope"))
+        .addOptional(ResourceLocation.fromNamespaceAndPath("farmersdelight", "rope"));
   }
 }

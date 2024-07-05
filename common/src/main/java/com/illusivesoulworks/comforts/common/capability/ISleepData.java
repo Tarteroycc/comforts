@@ -24,7 +24,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public interface ISleepData {
 
-  ResourceLocation ID = new ResourceLocation(ComfortsConstants.MOD_ID, "sleep_data");
+  ResourceLocation ID =
+      ResourceLocation.fromNamespaceAndPath(ComfortsConstants.MOD_ID, "sleep_data");
   String WAKE_TAG = "wakeTime";
   String TIRED_TAG = "tiredTime";
   String SLEEP_TAG = "sleepTime";
