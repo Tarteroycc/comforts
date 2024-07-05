@@ -111,9 +111,10 @@ public class ComfortsEvents {
 
     if (daySleeping[0] && level.getLevel().isDay()) {
       final long i = currentTime + 24000L;
-      return (i - i % 24000L) - 12001L;
+      long result = (i - i % 24000L) - 12001L;
+      return Math.max(ComfortsConfig.SERVER.nightWakeTimeOffset.get() + result, currentTime);
     }
-    return newTime;
+    return Math.max(newTime + ComfortsConfig.SERVER.dayWakeTimeOffset.get(), currentTime);
   }
 
   private static final List<MobEffectInstance> SLEEPING_BAG_EFFECTS = new ArrayList<>();
@@ -245,7 +246,7 @@ public class ComfortsEvents {
   }
 
   public static int sleepersNeeded(int activePlayers) {
-    int percentage = ComfortsConfig.SERVER.daytimeSleepingPercentage.get();
+    int percentage = ComfortsConfig.SERVER.daySleepingPercentage.get();
 
     if (percentage < 0) {
       return 0;
@@ -261,7 +262,7 @@ public class ComfortsEvents {
     }
 
     if (!server.isSingleplayer() || server.isPublished()) {
-      int percentage = ComfortsConfig.SERVER.daytimeSleepingPercentage.get();
+      int percentage = ComfortsConfig.SERVER.daySleepingPercentage.get();
 
       if (percentage < 0) {
         percentage = serverLevel.getGameRules().getInt(GameRules.RULE_PLAYERS_SLEEPING_PERCENTAGE);
