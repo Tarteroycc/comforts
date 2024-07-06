@@ -26,6 +26,6 @@ public record SleepingBagEnabledCondition() implements ResourceCondition {
 
   @Override
   public boolean test(@Nullable HolderLookup.Provider registryLookup) {
-    return ComfortsConfig.COMMON.enableSleepingBag.get();
+    return ComfortsConfig.COMMON.enableSleepingBagRecipes.get();
   }
 }

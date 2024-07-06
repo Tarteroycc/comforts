@@ -14,7 +14,7 @@ public record SleepingBagEnabledCondition() implements ICondition {
 
   @Override
   public boolean test(IContext context, DynamicOps<?> ops) {
-    return ComfortsConfig.COMMON.enableSleepingBag.get();
+    return ComfortsConfig.COMMON.enableSleepingBagRecipes.get();
   }
 
   @Nonnull

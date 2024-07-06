@@ -13,7 +13,7 @@ public record SleepingBagEnabledCondition() implements ICondition {
 
   @Override
   public boolean test(@Nonnull IContext context) {
-    return ComfortsConfig.COMMON.enableSleepingBag.get();
+    return ComfortsConfig.COMMON.enableSleepingBagRecipes.get();
   }
 
   @Nonnull

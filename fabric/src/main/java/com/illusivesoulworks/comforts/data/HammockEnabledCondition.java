@@ -26,6 +26,6 @@ public record HammockEnabledCondition() implements ResourceCondition {
 
   @Override
   public boolean test(@Nullable HolderLookup.Provider registryLookup) {
-    return ComfortsConfig.COMMON.enableHammock.get();
+    return ComfortsConfig.COMMON.enableHammockRecipes.get();
   }
 }

@@ -14,7 +14,7 @@ public record HammockEnabledCondition() implements ICondition {
 
   @Override
   public boolean test(IContext context, DynamicOps<?> ops) {
-    return ComfortsConfig.COMMON.enableHammock.get();
+    return ComfortsConfig.COMMON.enableHammockRecipes.get();
   }
 
   @Nonnull

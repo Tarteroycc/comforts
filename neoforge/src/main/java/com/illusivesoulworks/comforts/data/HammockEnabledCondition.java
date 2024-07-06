@@ -13,7 +13,7 @@ public record HammockEnabledCondition() implements ICondition {
 
   @Override
   public boolean test(@Nonnull IContext context) {
-    return ComfortsConfig.COMMON.enableHammock.get();
+    return ComfortsConfig.COMMON.enableHammockRecipes.get();
   }
 
   @Nonnull
