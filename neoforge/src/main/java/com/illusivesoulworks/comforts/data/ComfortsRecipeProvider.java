@@ -2,6 +2,7 @@ package com.illusivesoulworks.comforts.data;
 
 import com.illusivesoulworks.comforts.ComfortsConstants;
 import com.illusivesoulworks.comforts.common.ComfortsRegistry;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
@@ -19,6 +20,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.conditions.AndCondition;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.common.conditions.NotCondition;
+import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 
 public class ComfortsRecipeProvider extends RecipeProvider {
 
@@ -75,8 +80,10 @@ public class ComfortsRecipeProvider extends RecipeProvider {
       sleepingBag(pRecipeOutput, sleepingBags.get(i), wool.get(i));
       hammock(pRecipeOutput, hammocks.get(i), wool.get(i));
     }
-    colorWithDye(pRecipeOutput, dyes, hammocks, "comforts:hammock");
-    colorWithDye(pRecipeOutput, dyes, sleepingBags, "comforts:sleeping_bag");
+    colorWithDye(pRecipeOutput.withConditions(HammockEnabledCondition.INSTANCE), dyes, hammocks,
+        "comforts:hammock");
+    colorWithDye(pRecipeOutput.withConditions(SleepingBagEnabledCondition.INSTANCE), dyes,
+        sleepingBags, "comforts:sleeping_bag");
     Item ropeAndNail = ComfortsRegistry.ROPE_AND_NAIL_ITEM.get();
 
     ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ropeAndNail, 2)
@@ -87,14 +94,19 @@ public class ComfortsRecipeProvider extends RecipeProvider {
         .pattern("  A")
         .group("comforts:rope_and_nail")
         .unlockedBy("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-        .save(pRecipeOutput);
+        .save(pRecipeOutput.withConditions(HammockEnabledCondition.INSTANCE));
+
+    List<ICondition> conditions = new ArrayList<>();
+    conditions.add(HammockEnabledCondition.INSTANCE);
+    conditions.add(new NotCondition(new TagEmptyCondition(Tags.Items.ROPES)));
 
     ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, ropeAndNail, 2)
         .requires(Tags.Items.INGOTS_IRON)
         .requires(Tags.Items.ROPES)
         .group("comforts:rope_and_nail")
         .unlockedBy("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-        .save(pRecipeOutput, ComfortsConstants.MOD_ID + ":shapeless_" + getItemName(ropeAndNail));
+        .save(pRecipeOutput.withConditions(new AndCondition(conditions)),
+            ComfortsConstants.MOD_ID + ":shapeless_" + getItemName(ropeAndNail));
   }
 
   protected static void colorWithDye(RecipeOutput pRecipeOutput, List<TagKey<Item>> pDyes,
@@ -118,10 +130,12 @@ public class ComfortsRecipeProvider extends RecipeProvider {
                                     ItemLike pWool) {
     ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, pBed)
         .define('#', pWool)
-        .pattern("###")
+        .pattern(" # ")
+        .pattern(" # ")
+        .pattern(" # ")
         .group("comforts:sleeping_bag")
         .unlockedBy(getHasName(pWool), has(pWool))
-        .save(pRecipeOutput);
+        .save(pRecipeOutput.withConditions(SleepingBagEnabledCondition.INSTANCE));
   }
 
   protected static void hammock(RecipeOutput pRecipeOutput, ItemLike pBed,
@@ -130,11 +144,11 @@ public class ComfortsRecipeProvider extends RecipeProvider {
         .define('#', pWool)
         .define('S', Tags.Items.STRINGS)
         .define('X', Tags.Items.RODS_WOODEN)
-        .pattern("SXS")
+        .pattern(" X ")
         .pattern("S#S")
-        .pattern("SXS")
+        .pattern(" X ")
         .group("comforts:hammock")
         .unlockedBy(getHasName(pWool), has(pWool))
-        .save(pRecipeOutput);
+        .save(pRecipeOutput.withConditions(HammockEnabledCondition.INSTANCE));
   }
 }

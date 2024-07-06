@@ -41,6 +41,10 @@ sourceSets {
     }
 }
 
+fabricApi {
+    configureDataGeneration()
+}
+
 loom {
     def aw = project(":common").file("src/main/resources/${mod_id}.accesswidener")
     if (aw.exists()) {

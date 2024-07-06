@@ -29,6 +29,9 @@ import com.illusivesoulworks.comforts.data.ComfortsBlockTagsProvider;
 import com.illusivesoulworks.comforts.data.ComfortsItemTagProvider;
 import com.illusivesoulworks.comforts.data.ComfortsLootTableProvider;
 import com.illusivesoulworks.comforts.data.ComfortsRecipeProvider;
+import com.illusivesoulworks.comforts.data.HammockEnabledCondition;
+import com.illusivesoulworks.comforts.data.SleepingBagEnabledCondition;
+import com.mojang.serialization.MapCodec;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -49,6 +52,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -61,9 +65,15 @@ public class ComfortsNeoForgeMod {
 
   private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES =
       DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, ComfortsConstants.MOD_ID);
+  private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITIONS =
+      DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, ComfortsConstants.MOD_ID);
   public static final Supplier<AttachmentType<? extends ISleepData>> SLEEP_DATA =
       ATTACHMENT_TYPES.register("sleep_data",
           () -> AttachmentType.serializable(SleepDataAttachment::new).copyOnDeath().build());
+  public static final Supplier<MapCodec<? extends ICondition>> SLEEPING_BAG_CONDITION =
+      CONDITIONS.register("sleeping_bag_enabled", () -> SleepingBagEnabledCondition.CODEC);
+  public static final Supplier<MapCodec<? extends ICondition>> HAMMOCK_CONDITION =
+      CONDITIONS.register("hammock_enabled", () -> HammockEnabledCondition.CODEC);
 
   public ComfortsNeoForgeMod(IEventBus eventBus) {
     ComfortsCommonMod.init();
@@ -73,6 +83,7 @@ public class ComfortsNeoForgeMod {
       ComfortsNeoForgeClientMod.init(eventBus);
     }
     ATTACHMENT_TYPES.register(eventBus);
+    CONDITIONS.register(eventBus);
     eventBus.addListener(this::setup);
     eventBus.addListener(this::registerPayloadHandler);
     eventBus.addListener(this::creativeTab);

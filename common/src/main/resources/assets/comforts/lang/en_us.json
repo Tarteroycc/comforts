@@ -77,5 +77,9 @@
   "gui.comforts.config.dayWakeTimeOffset.name": "Night to day wake time offset",
   "gui.comforts.config.dayWakeTimeOffset.description": "The amount of time, in ticks, to add or remove from the new time after sleeping through a night.",
   "gui.comforts.config.nightWakeTimeOffset.name": "Day to night wake time offset",
-  "gui.comforts.config.nightWakeTimeOffset.description": "The amount of time, in ticks, to add or remove from the new time after sleeping through a day."
+  "gui.comforts.config.nightWakeTimeOffset.description": "The amount of time, in ticks, to add or remove from the new time after sleeping through a day.",
+  "gui.comforts.config.enableHammock.name": "Enable hammocks",
+  "gui.comforts.config.enableHammock.description": "If enabled, hammocks can be crafted and used.",
+  "gui.comforts.config.enableSleepingBag.name": "Enable sleeping bags",
+  "gui.comforts.config.enableSleepingBag.description": "If enabled, sleeping bags can be crafted and used."
 }

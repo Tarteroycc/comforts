@@ -1,0 +1,39 @@
+{
+  "advancements": [
+    {
+      "parent": "minecraft:recipes/root",
+      "criteria": {
+        "has_the_recipe": {
+          "conditions": {
+            "recipe": "comforts:hammock_yellow"
+          },
+          "trigger": "minecraft:recipe_unlocked"
+        },
+        "has_yellow_wool": {
+          "conditions": {
+            "items": [
+              {
+                "items": "minecraft:yellow_wool"
+              }
+            ]
+          },
+          "trigger": "minecraft:inventory_changed"
+        }
+      },
+      "forge:condition": {
+        "type": "comforts:hammock_enabled"
+      },
+      "requirements": [
+        [
+          "has_the_recipe",
+          "has_yellow_wool"
+        ]
+      ],
+      "rewards": {
+        "recipes": [
+          "comforts:hammock_yellow"
+        ]
+      }
+    }
+  ]
+}

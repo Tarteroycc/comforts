@@ -23,6 +23,15 @@ import com.illusivesoulworks.comforts.common.ComfortsRegistry;
 import com.illusivesoulworks.comforts.common.capability.ISleepData;
 import com.illusivesoulworks.comforts.common.network.ComfortsForgeNetwork;
 import com.illusivesoulworks.comforts.common.registry.RegistryObject;
+import com.illusivesoulworks.comforts.data.ComfortsRecipeProvider;
+import com.illusivesoulworks.comforts.data.HammockEnabledCondition;
+import com.illusivesoulworks.comforts.data.SleepingBagEnabledCondition;
+import com.mojang.serialization.MapCodec;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -30,24 +39,48 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(ComfortsConstants.MOD_ID)
 public class ComfortsForgeMod {
+
+  private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITIONS =
+      DeferredRegister.create(ForgeRegistries.Keys.CONDITION_SERIALIZERS, ComfortsConstants.MOD_ID);
+  public static final Supplier<MapCodec<? extends ICondition>> SLEEPING_BAG_CONDITION =
+      CONDITIONS.register("sleeping_bag_enabled", () -> SleepingBagEnabledCondition.CODEC);
+  public static final Supplier<MapCodec<? extends ICondition>> HAMMOCK_CONDITION =
+      CONDITIONS.register("hammock_enabled", () -> HammockEnabledCondition.CODEC);
 
   public ComfortsForgeMod() {
     ComfortsCommonMod.init();
     ComfortsCommonMod.initConfig();
     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ComfortsForgeClientMod::init);
     IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    CONDITIONS.register(eventBus);
     eventBus.addListener(this::setup);
     eventBus.addListener(this::registerCapabilities);
     eventBus.addListener(this::creativeTab);
+    eventBus.addListener(this::gatherData);
+  }
+
+  private void gatherData(GatherDataEvent evt) {
+    DataGenerator generator = evt.getGenerator();
+
+    if (evt.includeServer()) {
+      CompletableFuture<HolderLookup.Provider> lookupProvider = evt.getLookupProvider();
+      DataGenerator gen = evt.getGenerator();
+      PackOutput packOutput = gen.getPackOutput();
+      generator.addProvider(true, new ComfortsRecipeProvider(packOutput, lookupProvider));
+    }
   }
 
   private void setup(final FMLCommonSetupEvent evt) {

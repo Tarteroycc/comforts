@@ -15,6 +15,9 @@
   "icon": "${mod_id}_icon.png",
   "environment": "*",
   "entrypoints": {
+    "fabric-datagen": [
+      "com.illusivesoulworks.comforts.data.ComfortsDataGenerator"
+    ],
     "main": [
       "com.illusivesoulworks.comforts.ComfortsFabricMod"
     ],

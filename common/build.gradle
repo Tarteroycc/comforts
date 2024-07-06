@@ -17,16 +17,6 @@ dependencies {
     implementation group: 'com.illusivesoulworks.spectrelib', name: 'spectrelib-common', version: "${spectrelib_version}"
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDirs += [
-                    project(':neoforge').file('src/generated/resources/').getAbsolutePath()
-            ]
-        }
-    }
-}
-
 configurations {
     commonJava {
         canBeResolved = false

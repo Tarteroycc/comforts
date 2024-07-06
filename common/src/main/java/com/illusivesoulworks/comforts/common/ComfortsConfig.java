@@ -29,13 +29,36 @@ public class ComfortsConfig {
 
   public static final SpectreConfigSpec SERVER_SPEC;
   public static final Server SERVER;
+  public static final SpectreConfigSpec COMMON_SPEC;
+  public static final Common COMMON;
   private static final String CONFIG_PREFIX = "gui." + ComfortsConstants.MOD_ID + ".config.";
 
   static {
-    final Pair<Server, SpectreConfigSpec> specPair = new SpectreConfigSpec.Builder()
+    Pair<Server, SpectreConfigSpec> specPair1 = new SpectreConfigSpec.Builder()
         .configure(Server::new);
-    SERVER_SPEC = specPair.getRight();
-    SERVER = specPair.getLeft();
+    SERVER_SPEC = specPair1.getRight();
+    SERVER = specPair1.getLeft();
+    Pair<Common, SpectreConfigSpec> specPair2 = new SpectreConfigSpec.Builder()
+        .configure(Common::new);
+    COMMON_SPEC = specPair2.getRight();
+    COMMON = specPair2.getLeft();
+  }
+
+  public static class Common {
+
+    public final SpectreConfigSpec.BooleanValue enableHammock;
+    public final SpectreConfigSpec.BooleanValue enableSleepingBag;
+
+    public Common(SpectreConfigSpec.Builder builder) {
+
+      enableHammock = builder.comment("If enabled, hammocks can be crafted and used.")
+          .translation(CONFIG_PREFIX + "enableHammock")
+          .define("enableHammock", true);
+
+      enableSleepingBag = builder.comment("If enabled, sleeping bags can be crafted and used.")
+          .translation(CONFIG_PREFIX + "enableSleepingBag")
+          .define("enableSleepingBag", true);
+    }
   }
 
   public static class Server {

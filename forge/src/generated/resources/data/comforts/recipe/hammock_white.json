@@ -1,0 +1,35 @@
+{
+  "type": "forge:conditional",
+  "forge:condition": {
+    "type": "comforts:hammock_enabled"
+  },
+  "recipes": [
+    {
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "group": "comforts:hammock",
+        "key": {
+          "#": {
+            "item": "minecraft:white_wool"
+          },
+          "S": {
+            "tag": "forge:string"
+          },
+          "X": {
+            "tag": "forge:rods/wooden"
+          }
+        },
+        "pattern": [
+          " X ",
+          "S#S",
+          " X "
+        ],
+        "result": {
+          "count": 1,
+          "id": "comforts:hammock_white"
+        }
+      }
+    }
+  ]
+}

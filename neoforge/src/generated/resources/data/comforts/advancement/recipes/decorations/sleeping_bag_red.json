@@ -1,4 +1,9 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "comforts:sleeping_bag_enabled"
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_red_wool": {

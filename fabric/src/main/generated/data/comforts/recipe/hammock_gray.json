@@ -1,0 +1,30 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "comforts:hammock_enabled"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "comforts:hammock",
+  "key": {
+    "#": {
+      "item": "minecraft:gray_wool"
+    },
+    "S": {
+      "tag": "c:strings"
+    },
+    "X": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    " X ",
+    "S#S",
+    " X "
+  ],
+  "result": {
+    "count": 1,
+    "id": "comforts:hammock_gray"
+  }
+}

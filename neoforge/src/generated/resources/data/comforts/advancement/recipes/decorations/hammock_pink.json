@@ -1,4 +1,9 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "comforts:hammock_enabled"
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_pink_wool": {

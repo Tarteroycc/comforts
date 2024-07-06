@@ -1,0 +1,39 @@
+{
+  "advancements": [
+    {
+      "parent": "minecraft:recipes/root",
+      "criteria": {
+        "has_the_recipe": {
+          "conditions": {
+            "recipe": "comforts:hammock_white"
+          },
+          "trigger": "minecraft:recipe_unlocked"
+        },
+        "has_white_wool": {
+          "conditions": {
+            "items": [
+              {
+                "items": "minecraft:white_wool"
+              }
+            ]
+          },
+          "trigger": "minecraft:inventory_changed"
+        }
+      },
+      "forge:condition": {
+        "type": "comforts:hammock_enabled"
+      },
+      "requirements": [
+        [
+          "has_the_recipe",
+          "has_white_wool"
+        ]
+      ],
+      "rewards": {
+        "recipes": [
+          "comforts:hammock_white"
+        ]
+      }
+    }
+  ]
+}

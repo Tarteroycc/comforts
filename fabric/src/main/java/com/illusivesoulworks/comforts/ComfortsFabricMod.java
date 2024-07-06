@@ -22,10 +22,13 @@ import com.illusivesoulworks.comforts.common.ComfortsRegistry;
 import com.illusivesoulworks.comforts.common.network.SPacketAutoSleep;
 import com.illusivesoulworks.comforts.common.network.SPacketPlaceBag;
 import com.illusivesoulworks.comforts.common.registry.RegistryObject;
+import com.illusivesoulworks.comforts.data.HammockEnabledCondition;
+import com.illusivesoulworks.comforts.data.SleepingBagEnabledCondition;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -77,5 +80,7 @@ public class ComfortsFabricMod implements ModInitializer {
     });
     PayloadTypeRegistry.playS2C().register(SPacketPlaceBag.TYPE, SPacketPlaceBag.STREAM_CODEC);
     PayloadTypeRegistry.playS2C().register(SPacketAutoSleep.TYPE, SPacketAutoSleep.STREAM_CODEC);
+    ResourceConditions.register(HammockEnabledCondition.TYPE);
+    ResourceConditions.register(SleepingBagEnabledCondition.TYPE);
   }
 }
