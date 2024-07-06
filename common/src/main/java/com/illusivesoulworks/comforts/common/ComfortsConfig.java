@@ -46,18 +46,20 @@ public class ComfortsConfig {
 
   public static class Common {
 
-    public final SpectreConfigSpec.BooleanValue enableHammock;
-    public final SpectreConfigSpec.BooleanValue enableSleepingBag;
+    public final SpectreConfigSpec.BooleanValue enableHammockRecipes;
+    public final SpectreConfigSpec.BooleanValue enableSleepingBagRecipes;
 
     public Common(SpectreConfigSpec.Builder builder) {
 
-      enableHammock = builder.comment("If enabled, hammocks can be crafted and used.")
-          .translation(CONFIG_PREFIX + "enableHammock")
-          .define("enableHammock", true);
+      enableHammockRecipes =
+          builder.comment("If enabled, the default hammock recipes will be available.")
+              .translation(CONFIG_PREFIX + "enableHammockRecipes")
+              .define("enableHammockRecipes", true);
 
-      enableSleepingBag = builder.comment("If enabled, sleeping bags can be crafted and used.")
-          .translation(CONFIG_PREFIX + "enableSleepingBag")
-          .define("enableSleepingBag", true);
+      enableSleepingBagRecipes =
+          builder.comment("If enabled, the default sleeping bag recipes will be available.")
+              .translation(CONFIG_PREFIX + "enableSleepingBagRecipes")
+              .define("enableSleepingBagRecipes", true);
     }
   }
 
